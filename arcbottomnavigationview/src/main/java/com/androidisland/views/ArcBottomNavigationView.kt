@@ -82,7 +82,9 @@ open class ArcBottomNavigationView : BottomNavigationView {
         set(value) {
             field = value
             button?.apply {
-                icon = value
+                value?.let {
+                    icon = value
+                }
             }
         }
 
@@ -168,6 +170,7 @@ open class ArcBottomNavigationView : BottomNavigationView {
     private var visibleBound: RectF = RectF(0.0f, 0.0f, 0.0f, 0.0f)
     private val visibleBoundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
+        setShadowLayer(10F, 5F, 5F, Color.argb(255, 0, 0, 0))
     }
     //Keeps curved state points, only change when size changed
     private var arcBoundPoints: MutableList<PointF> = mutableListOf()
@@ -255,8 +258,8 @@ open class ArcBottomNavigationView : BottomNavigationView {
                 setPadding(0)
                 iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
                 iconSize = buttonIconSize.toInt()
-                icon = buttonIcon
-                iconTintMode = PorterDuff.Mode.SRC_IN
+                buttonIcon?.let { icon = it }
+                setIconTintMode(PorterDuff.Mode.SRC_IN)
                 if (buttonIconTint != Color.TRANSPARENT)
                     iconTint = ColorStateList.valueOf(buttonIconTint)
                 strokeWidth = buttonStrokeWidth.toInt()
@@ -384,11 +387,11 @@ open class ArcBottomNavigationView : BottomNavigationView {
             getBackgroundColor()?.let {
                 visibleBoundPaint.color = it
             }
-//            if (!isInEditMode) {
-//                drawPath(currentPath, visibleBoundPaint)
-//            } else {
-//                drawPath(createEditModePath(), visibleBoundPaint)
-//            }
+            if (!isInEditMode) {
+                drawPath(currentPath, visibleBoundPaint)
+            } else {
+                drawPath(createEditModePath(), visibleBoundPaint)
+            }
         }
     }
 
@@ -427,7 +430,7 @@ open class ArcBottomNavigationView : BottomNavigationView {
     }
 
     private fun arcStart(width: Float) =
-        PointF(width / 2 - 1.2f * buttonRadius - 4.0f * buttonMargin, getVisibleCorners()[0].y)
+        PointF(width / 2 - 1.5f * buttonRadius - 4.0f * buttonMargin, getVisibleCorners()[0].y)
 
     private fun arcEnd(width: Float) = PointF().apply {
         val curveStart = arcStart(width)
